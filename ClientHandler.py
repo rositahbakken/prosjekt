@@ -29,20 +29,9 @@ class ClientHandler(socketserver.BaseRequestHandler):
             # TODO: Add handling of received payload from client
 
     def checkPayload(self):
-    #     self.recieved_string = self.received_string.split(',')
-    #     if self.recieved_string[0].matches("'request': <"+"login"+">") and self.received_string[1].matches("'content': <"+"[a-zA-z0-9_]+"+">"):
-    #         username = self.received_string[1][11:self.received_string[1].length - 1]
-    #         if username not in self.chatHandler.getActive_users():
-    #             self.chatHandler.addUser(username)
-    #             print(self.chatHandler.getHistory())
-    #         else:
-    #             print("brukernavnet er tatt, velg et annet")
-    #
-    #
-    #     if self.recieved_string[0].matches("'request': <"+"logout"+">") and not self.received_string[1][11:self.received_string[1].length - 1]:
-    #         self.chatHandler.removeUser()
         req = None
         cont = None
+        loggedin = False
 
         if type(self.received_string) != str:
             try:
@@ -57,18 +46,22 @@ class ClientHandler(socketserver.BaseRequestHandler):
             req = jrec["request"]
             cont = jrec["content"]
 
-        if req == "login" and cont:
+        if req == "login" and cont and not loggedin:
             user = cont
             if user not in self.chatHandler.getUsers():
                 self.chatHandler.addUser(user)
                 self.chatHandler.addConnection(self.chatHandler)
                 print(self.chatHandler.getHistory())
+                print(user+" logged in!")
+                self.loggedin = True
             else:
                 print("Brukernavnet er opptatt, velg et annet.")
 
-        if req == "logout" and not cont:
+        if req == "logout" and loggedin and not cont:
             self.chatHandler.removeUser()
             self.chatHandler.removeConnection(self.chatHandler)
+            self.loggedin = False
+            print(self.chatHandler.getActiveUser()+" logged out!")
 
         if req == "msg" and cont:
             self.chatHandler.addHistory()
@@ -80,4 +73,6 @@ class ClientHandler(socketserver.BaseRequestHandler):
         if req == "help" and not cont:
             print("hjelpetext")
 
+        else:
+            print("Noe ble feil. Prøv igjen eller skriv 'help' om du trenger hjelp.")
 

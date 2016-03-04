@@ -4,6 +4,8 @@ class ChatHandler:
 
     this_user = None
     connections = []
+    active_users = []
+    chat_history = []
 
     def __init__(self, active_users, chat_history):
         self.active_users = active_users
@@ -29,6 +31,9 @@ class ChatHandler:
 
     def getHistory(self):
         return self.chat_history
+
+    def getActiveUser(self):
+        return self.this_user
 
     def addConnection(self, chatHandler):
         self.connections.append(chatHandler)
