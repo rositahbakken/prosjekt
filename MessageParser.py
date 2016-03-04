@@ -8,6 +8,8 @@ class MessageParser():
         self.possible_responses = {
             'error': self.parse_error,
             'info': self.parse_info,
+            'message': self.parse_message,
+            'history': self.parse_history
 	    # More key:values pairs are needed
         }
 
@@ -17,12 +19,34 @@ class MessageParser():
         if payload['response'] in self.possible_responses:
             return self.possible_responses[payload['response']](payload)
         else:
-            pass
+            return 'Not valid server response'
             # Response not valid
 
     def parse_error(self, payload):
-        pass
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+'Error: '+content
+
     def parse_info(self, payload):
-        pass
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+content
+
+    def parse_message(self, payload):
+        sender = payload['sender']
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+sender+': '+content
+
+    def parse_history(self, payload):
+        history = json.load(payload['content'])
+        history_msg = ''
+        history_list= []
+        for user in history:
+            history_list.append([user, history[user]]) # [[timestap  user, content],[timestamp  user, content]...]
+        history_list.sort()
+        for user in history_list:
+            history_msg += user+': '+history[user]+'\n'
+        return history_msg
 
     # Include more methods for handling the different responses...
