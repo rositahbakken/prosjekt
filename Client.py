@@ -19,9 +19,14 @@ class Client:
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = host
         self.server_port = server_port
+        self.run()
+
+        while True:
+            user_input = input('> ')
+            request = user_input.split('')[0]
+
 
         # TODO: Finish init process with necessary code
-        self.run()
 
     def run(self):
         # Initiate the connection to the server
@@ -32,8 +37,11 @@ class Client:
         pass
 
     def receive_message(self, message):
+        msg_parser = MessageParser()
+        print_message = msg_parser.parse(message)
+        return print_message
         # TODO: Handle incoming message
-        pass
+
 
     def send_payload(self, data):
         # TODO: Handle sending of a payload
