@@ -19,4 +19,10 @@ class ChatHandler:
     def deleteHistory(self):
         self.chat_history = []
 
+    def getUsers(self):
+        return self.active_users
+
+    def getHistory(self):
+        return self.chat_history
+
 
