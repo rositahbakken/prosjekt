@@ -8,6 +8,7 @@ class Client:
     """
     This is the chat client class
     """
+    #hallohallo
 
     def __init__(self, host, server_port):
         """
