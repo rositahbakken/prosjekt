@@ -22,11 +22,12 @@ class ClientHandler(socketserver.BaseRequestHandler):
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
+        self.chatHandler.addConnection(self.connection)
+        self.user = ''
 
         # Loop that listens for messages from the client
         while True:
             self.received_string = self.connection.recv(4096)
-            print(self.received_string)
             self.received_string = self.received_string.decode()
             self.checkPayload()
 
@@ -36,7 +37,6 @@ class ClientHandler(socketserver.BaseRequestHandler):
         req = None
         cont = None
         loggedin = False
-        user = ''
 
         if type(self.received_string) != str:
             try:
@@ -52,10 +52,10 @@ class ClientHandler(socketserver.BaseRequestHandler):
             cont = jrec["content"]
 
         if req == "login" and cont and not loggedin:
-            user = cont
-            if user not in self.chatHandler.getUsers():
-                self.chatHandler.addUser(user)
-                self.chatHandler.addConnection(self.chatHandler)
+            self.user = cont
+            if self.user not in self.chatHandler.getUsers():
+                self.chatHandler.addUser(self.user)
+                #self.chatHandler.addConnection(self.chatHandler)
                 tid = time.time()
                 now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
                 response = {"timestamp": now, "sender": "Server", "response": "login", "content": "Suksessfull innlogging."}
@@ -101,13 +101,11 @@ class ClientHandler(socketserver.BaseRequestHandler):
             thread = self.chatHandler.getConnection()
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime("%H:%M:%S")
-            response = {"timestamp": thisTime, "sender": user, "response": "message", "content": cont}
+            response = {"timestamp": thisTime, "sender": self.user, "response": "message", "content": cont}
             jsonresponse = json.dumps(response)
             for i in thread:
-                i.connection.send(jsonresponse.encode())
-
+                i.send(jsonresponse.encode())
             self.chatHandler.addHistory(cont)
-            self.connection.send(jsonresponse.encode())
 
 
         elif req == "names" and not cont:
