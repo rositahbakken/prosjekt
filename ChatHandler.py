@@ -14,9 +14,9 @@ class ChatHandler():
     def addUser(self, user):
         self.active_users.add(user)
 
-    # def removeUser(self):
-    #     self.active_users.remove(self.this_user)
-    #     self.this_user = None
+     def removeUser(self):
+         self.active_users.remove(self.this_user)
+         self.this_user = None
 
     def addHistory(self, chat_line):
         self.chat_history.add(chat_line)
@@ -33,6 +33,12 @@ class ChatHandler():
     def addConnection(self, chatHandler):
         self.connections.append(chatHandler)
 
+    def getConnection(self):
+        return self.connections
+
     def removeConnection(self, chatHandler):
         self.connections.remove(chatHandler)
+
+    def addMessage(self, msg):
+        pass
 
