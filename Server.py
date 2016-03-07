@@ -1,6 +1,7 @@
 __author__ = 'Anna'
 
 import socketserver
+import ChatHandler
 
 """
 Variables and functions that must be used by all the ClientHandler objects
@@ -29,6 +30,7 @@ class ClientHandler(socketserver.BaseRequestHandler):
 
 
             # TODO: Add handling of received payload from client
+        chatHandler = ChatHandler()
 
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):

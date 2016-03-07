@@ -1,6 +1,6 @@
 __author__ = 'macsita'
 
-class ChatHandler:
+class ChatHandler():
 
     def __init__(self, active_users, chat_history):
         self.active_users = active_users
