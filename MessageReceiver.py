@@ -34,14 +34,3 @@ class MessageReceiver(Thread):
                 break
             print_message = self.client.receive_message(from_server)
             print(print_message)
-
-
-    def sendMessage(self):
-        user_input = input('> ')
-        user_input = user_input.split(' ',1)
-        if len(user_input) == 1:
-            payload = {'request':user_input[0], 'content':''}
-        else:
-            payload = {'request':user_input[0], 'content':user_input[1]}
-        payload = json.dumps(payload)
-        self.connection.send(payload)
