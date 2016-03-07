@@ -30,8 +30,8 @@ class ChatHandler:
     def getHistory(self):
         return self.chat_history
 
-    def addConnection(self, chatHandler):
-        self.connections.append(chatHandler)
+    def addConnection(self, conn):
+        self.connections.append(conn)
 
     def getConnection(self):
         return self.connections
@@ -41,4 +41,5 @@ class ChatHandler:
 
     def addMessage(self, msg):
         pass
+
 
