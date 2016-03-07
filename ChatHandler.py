@@ -14,9 +14,9 @@ class ChatHandler:
 
     def addUser(self, user):
         self.active_users.add(user)
+
     def removeUser(self):
         self.active_users.remove(self.this_user)
-
 
     def addHistory(self, chat_line):
         self.chat_history.add(chat_line)
