@@ -32,6 +32,7 @@ class ClientHandler(socketserver.BaseRequestHandler):
         req = None
         cont = None
         loggedin = False
+        user = ''
 
         if type(self.received_string) != str:
             try:
@@ -57,20 +58,21 @@ class ClientHandler(socketserver.BaseRequestHandler):
             else:
                 print("Brukernavnet er opptatt, velg et annet.")
 
-        if req == "logout" and loggedin and not cont:
+        elif req == "logout" and loggedin and not cont:
             self.chatHandler.removeUser()
             self.chatHandler.removeConnection(self.chatHandler)
             self.loggedin = False
+            user = ''
             print(self.chatHandler.getActiveUser()+" logged out!")
 
-        if req == "msg" and cont:
+        elif req == "msg" and cont:
             self.chatHandler.addHistory()
             self.connection.send(cont)
 
-        if req == "names" and not cont:
+        elif req == "names" and not cont:
             print(self.chatHandler.getUsers())
 
-        if req == "help" and not cont:
+        elif req == "help" and not cont:
             print("hjelpetext")
 
         else:
