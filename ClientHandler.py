@@ -26,8 +26,8 @@ class ClientHandler(socketserver.BaseRequestHandler):
         # Loop that listens for messages from the client
         while True:
             self.received_string = self.connection.recv(4096)
-            #self.received_string = self.received_string.decode()
             print(self.received_string)
+            self.received_string = self.received_string.decode()
             self.checkPayload()
 
             # TODO: Add handling of received payload from client
@@ -40,14 +40,14 @@ class ClientHandler(socketserver.BaseRequestHandler):
 
         if type(self.received_string) != str:
             try:
-                jrec = json.loads(self.received_string.decode())
+                jrec = json.loads(self.received_string)
                 req = jrec["request"].encode()
                 cont = jrec["content"].encode()
             except TypeError or ValueError:
                 print("Dette er ikke et JSON-objekt")
 
         else:
-            jrec = json.loads(self.received_string.decode())
+            jrec = json.loads(self.received_string)
             req = jrec["request"]
             cont = jrec["content"]
 
@@ -58,15 +58,15 @@ class ClientHandler(socketserver.BaseRequestHandler):
                 self.chatHandler.addConnection(self.chatHandler)
                 tid = time.time()
                 now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-                response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Suksessfull innlogging."}
+                response = {"timestamp": now, "sender": "Server", "response": "login", "content": "Suksessfull innlogging."}
                 jsonresponse = json.dumps(response)
-                self.connection.send(json.dumps(jsonresponse).encode())
+                self.connection.send(jsonresponse.encode())
             else:
                 tid = time.time()
                 now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-                response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Brukernavnet er opptatt, vennligst velg et annet."}
+                response = {"timestamp": now, "sender": "Server", "response": "login", "content": "Brukernavnet er opptatt, vennligst velg et annet."}
                 jsonresponse = json.dumps(response)
-                self.connection.send(json.dumps(jsonresponse))
+                self.connection.send(jsonresponse.encode())
                 for i in self.chatHandler.getHistory():
                     self.connection.send(i.encode())
                 print(user+" logget på!")
@@ -79,42 +79,42 @@ class ClientHandler(socketserver.BaseRequestHandler):
             user = ''
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            response = {"Timestamp": now, "Sender": "Server", "Response": "Logout", "Content": "Suksessfull utlogging"}
+            response = {"timestamp": now, "sender": "Server", "response": "logout", "content": "Suksessfull utlogging"}
             jsonresponse = json.dumps(response)
-            self.connection.send(json.dumps(jsonresponse).encode())
+            self.connection.send(jsonresponse.encode())
             print(self.chatHandler.getUsers()+" logged out!")
 
         elif req == 'history':
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
             history = self.chatHandler.getHistory()
-            response = {"Timestamp": thisTime, "Sender": "Server", "Response": "History", "Content": cont}
+            response = {"timestamp": thisTime, "sender": "Server", "response": "history", "content": cont}
             jsonresponse = json.dumps(response)
             self.connection.send(jsonresponse.encode())
 
         elif req == "msg" and cont:
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            ob = {"Timestamp": thisTime, "Sender": "Server", "Response": "Message", "Content": cont}
+            ob = {"timestamp": thisTime, "sender": "Server", "response": "message", "content": cont}
             jsonresponse = json.dumps(ob)
             self.chatHandler.addMessage(jsonresponse)
             thread = self.chatHandler.getConnection()
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime("%H:%M:%S")
-            response = {"Timestamp": thisTime, "Sender": user, "Response": "Message", "Content": cont}
+            response = {"timestamp": thisTime, "sender": user, "response": "message", "content": cont}
             jsonresponse = json.dumps(response)
             for i in thread:
-                i.connection.send(jsonresponse)
+                i.connection.send(jsonresponse.encode())
 
             self.chatHandler.addHistory(cont)
-            self.connection.send(cont.encode())
+            self.connection.send(jsonresponse.encode())
 
 
         elif req == "names" and not cont:
             users = self.chatHandler.getUsers()
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            response = {"Timestamp": now, "Sender": "Server", "Response": "Names", "Content": users}
+            response = {"timestamp": now, "sender": "Server", "response": "names", "content": users}
             jsonresponse = json.dumps(response)
             self.connection.send(jsonresponse.encode())
 
