@@ -91,8 +91,8 @@ class ClientHandler(socketserver.BaseRequestHandler):
 
         elif req == "msg" and cont:
             tid = time.time()
-            thisTime = datetime.datetime.fromtimestamp(tid).strftime("%H:%M:%S")
-            ob = {"Timestamp": thisTime, "Sender": "Server", "Server", "Response": "Message", "Content": cont}
+            thisTime = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
+            ob = {"Timestamp": thisTime, "Sender": "Server", "Response": "Message", "Content": cont}
             jsonresponse = json.dumps(ob)
             self.chatHandler.addMessage(jsonresponse)
             thread = self.chatHandler.getConnection()
