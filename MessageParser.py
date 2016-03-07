@@ -17,7 +17,6 @@ class MessageParser():
         }
 
     def parse(self, payload):
-        print(payload)
         decodedPayload = payload.decode()
         payload = json.loads(decodedPayload) # decode the JSON object
         # JSON object on form: { 'timestamp': <timestampt>, 'sender': <username>, 'response': <response>, 'content': <content>, }
