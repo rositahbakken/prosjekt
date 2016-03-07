@@ -3,6 +3,8 @@ __author__ = 'mytterland'
 import socketserver
 import ChatHandler
 import json
+import time
+import datetime
 
 class ClientHandler(socketserver.BaseRequestHandler):
     """
@@ -52,21 +54,36 @@ class ClientHandler(socketserver.BaseRequestHandler):
             if user not in self.chatHandler.getUsers():
                 self.chatHandler.addUser(user)
                 self.chatHandler.addConnection(self.chatHandler)
-                print(self.chatHandler.getHistory())
-                print(user+" logged in!")
+                tid = time.time()
+                now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
+                response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Suksessfull innlogging."}
+                jsonresponse = json.dumps(response)
+                self.connection.send(json.dumps(jsonresponse))
+                for i in self.chatHandler.getHistory():
+                    self.connection.send(i)
+                print(user+" logget på!")
                 self.loggedin = True
             else:
-                print("Brukernavnet er opptatt, velg et annet.")
+                tid = time.time()
+                now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
+                response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Brukernavnet er opptatt, vennligst velg et annet."}
+                jsonresponse = json.dumps(response)
+                self.connection.send(json.dumps(jsonresponse))
 
         elif req == "logout" and loggedin and not cont:
             self.chatHandler.removeUser()
             self.chatHandler.removeConnection(self.chatHandler)
             self.loggedin = False
             user = ''
+            tid = time.time()
+            now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
+            response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Suksessfull utlogging"}
+            jsonresponse = json.dumps(response)
+            self.connection.send(json.dumps(jsonresponse))
             print(self.chatHandler.getActiveUser()+" logged out!")
 
         elif req == "msg" and cont:
-            self.chatHandler.addHistory()
+            self.chatHandler.addHistory(cont)
             self.connection.send(cont)
 
         elif req == "names" and not cont:
