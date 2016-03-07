@@ -77,15 +77,16 @@ class ClientHandler(socketserver.BaseRequestHandler):
             user = ''
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Suksessfull utlogging"}
+            response = {"Timestamp": now, "Sender": "Server", "Response": "Logout", "Content": "Suksessfull utlogging"}
             jsonresponse = json.dumps(response)
             self.connection.send(json.dumps(jsonresponse))
             print(self.chatHandler.getUsers()+" logged out!")
+
         elif req == 'history':
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
             history = self.chatHandler.getHistory()
-            response = {"Timestamp": thisTime, "Sender": "Server", "Response": "Message", "Content": cont}
+            response = {"Timestamp": thisTime, "Sender": "Server", "Response": "History", "Content": cont}
             jsonresponse = json.dumps(response)
             self.connection.send(jsonresponse)
 
@@ -111,7 +112,7 @@ class ClientHandler(socketserver.BaseRequestHandler):
             users = self.chatHandler.getUsers()
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": users}
+            response = {"Timestamp": now, "Sender": "Server", "Response": "Names", "Content": users}
             jsonresponse = json.dumps(response)
             self.connection.send(jsonresponse)
 
