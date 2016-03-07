@@ -25,7 +25,6 @@ class MessageReceiver(Thread):
 
     def run(self):
         Thread(target= self.receiveMessage()).start()
-        Thread(target= self.sendMessage()).start()
         # TODO: Make MessageReceiver receive and handle payloads
 
     def receiveMessage(self):
