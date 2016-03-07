@@ -1,6 +1,6 @@
 __author__ = 'macsita'
 
-class ChatHandler():
+class ChatHandler:
 
     connections = []
     active_users = []
@@ -9,14 +9,14 @@ class ChatHandler():
     def __init__(self, active_users, chat_history):
         self.active_users = active_users
         self.chat_history = chat_history
+        self.this_user = None
 
 
     def addUser(self, user):
         self.active_users.add(user)
+    def removeUser(self):
+        self.active_users.remove(self.this_user)
 
-     def removeUser(self):
-         self.active_users.remove(self.this_user)
-         self.this_user = None
 
     def addHistory(self, chat_line):
         self.chat_history.add(chat_line)
