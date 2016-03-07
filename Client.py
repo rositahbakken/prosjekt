@@ -21,18 +21,11 @@ class Client:
         self.host = host
         self.server_port = server_port
         self.run()
-
-        while True:
-            user_input = input('> ')
-            user_input = user_input.split('',1)
-            if len(user_input) == 1:
-                payload = {'request':user_input[0], 'content':''}
-            else:
-                payload = {'request':user_input[0], 'content':user_input[1]}
-            payload = json.dumps(payload)
-            self.connection.send(payload)
-
-
+        message_receiver = MessageReceiver(self, self.connection)
+        message_receiver.start()
+        string = json.dumps({'request':'msg', 'content':'test'})
+        string = string.encode()
+        self.connection.send(string)
 
         # TODO: Finish init process with necessary code
 
