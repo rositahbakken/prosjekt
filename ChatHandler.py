@@ -37,8 +37,8 @@ class ChatHandler:
     def getConnection(self):
         return self.connections
 
-    def removeConnection(self, chatHandler):
-        self.connections.remove(chatHandler)
+    def removeConnection(self, conn):
+        self.connections.remove(conn)
 
 
 
