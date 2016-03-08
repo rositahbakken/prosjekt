@@ -103,7 +103,7 @@ class ClientHandler(socketserver.BaseRequestHandler):
                     self.connection.send(i.encode())
                     time.sleep(0.01)
 
-        elif req == "msg" and cont:
+        elif req == "msg" and self.loggedin and cont:
             thread = self.chatHandler.getConnection()
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime("%H:%M:%S")
@@ -115,7 +115,7 @@ class ClientHandler(socketserver.BaseRequestHandler):
             for i in thread:
                 i.send(jsonresponse.encode())
 
-        elif req == "names" and not cont:
+        elif req == "names" and self.loggedin and not cont:
             users = self.chatHandler.getUsers()
             userstring= json.dumps(users)
             tid = time.time()
