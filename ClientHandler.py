@@ -69,7 +69,7 @@ class ClientHandler(socketserver.BaseRequestHandler):
                 self.connection.send(jsonresponse.encode())
                 for i in self.chatHandler.getHistory():
                     self.connection.send(i.encode())
-                print(user+" logget på!")
+                print(self.user+" logget på!")
                 self.loggedin = True ##flytta for-løkka hit, men litt usikker. derde hadde den i eks på github
 
         elif req == "logout" and loggedin and not cont:
