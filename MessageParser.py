@@ -12,7 +12,8 @@ class MessageParser():
             'history': self.parse_history,
             'login': self.parse_login,
             'logout': self.parse_logout,
-            'names': self.parse_names
+            'names': self.parse_names,
+            'help': self.parse_help
 	    # More key:values pairs are needed
         }
 
@@ -43,15 +44,19 @@ class MessageParser():
         return timestamp+'  '+sender+': '+content
 
     def parse_history(self, payload):
-        history = json.load(payload['content'])
-        history_msg = ''
-        history_list= []
-        for user in history:
-            history_list.append([user, history[user]]) # [[timestap  user, content],[timestamp  user, content]...]
-        history_list.sort()
-        for user in history_list:
-            history_msg += user+': '+history[user]+'\n'
-        return history_msg
+        # history = json.load(payload['content'])
+        # history_msg = ''
+        # history_list= []
+        # for user in history:
+        #     history_list.append([user, history[user]]) # [[timestap  user, content],[timestamp  user, content]...]
+        # history_list.sort()
+        # for user in history_list:
+        #     history_msg += user+': '+history[user]+'\n'
+        # return history_msg
+        sender = payload['sender']
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+sender+': '+content
 
     def parse_login(self, payload):
         timestamp = payload['timestamp']
@@ -70,4 +75,8 @@ class MessageParser():
         content = payload['content']
         return timestamp+'  '+content
 
+    def parse_help(self, payload):
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+content
     # Include more methods for handling the different responses...

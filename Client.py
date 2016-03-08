@@ -25,7 +25,7 @@ class Client:
         message_receiver = MessageReceiver(self, self.connection)
         message_receiver.start()
         while True:
-            user_input = input('> ')
+            user_input = input()
             user_input = user_input.split(' ',1)
             if len(user_input) == 1:
                 payload = {'request':user_input[0], 'content':''}
