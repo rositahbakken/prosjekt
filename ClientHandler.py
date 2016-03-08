@@ -129,7 +129,13 @@ class ClientHandler(socketserver.BaseRequestHandler):
         elif req == "help" and not cont:
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            response = {"timestamp": now, "sender": "Server", "response": "help", "content": "hjelpetekst"}
+            hjelpetekst = "Her er en liste over mulige operasjoner:\n" \
+                          "login username - logger deg på chatten med brukernavner, username\n" \
+                          "logout - logger deg av chatten\n" \
+                          "names - liste over alle aktive brukere\n" \
+                          "history - skriver ut chathistorikken\n" \
+                          "msg tekst - sender melding til alle brukere, skriv inn det du vil si etter 'msg"
+            response = {"timestamp": now, "sender": "Server", "response": "help", "content": hjelpetekst}
             jsonresponse = json.dumps(response)
             self.connection.send(jsonresponse.encode())
 
