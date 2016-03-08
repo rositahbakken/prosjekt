@@ -3,23 +3,23 @@ __author__ = 'macsita'
 class ChatHandler:
 
     connections = []
-    active_users = []
-    chat_history = []
+    #active_users = []
+    #chat_history = []
 
-    def __init__(self, active_users, chat_history):
-        self.active_users = active_users
-        self.chat_history = chat_history
+    def __init__(self): # ( active_users, chat_history)
+        self.active_users = [] #= active_users
+        self.chat_history = [] #chat_history
         self.this_user = None
 
 
     def addUser(self, user):
-        self.active_users.add(user)
-
+        self.active_users.append(user)
     def removeUser(self):
         self.active_users.remove(self.this_user)
 
+
     def addHistory(self, chat_line):
-        self.chat_history.add(chat_line)
+        self.chat_history.append(chat_line)
 
     def deleteHistory(self):
         self.chat_history = []
@@ -30,8 +30,8 @@ class ChatHandler:
     def getHistory(self):
         return self.chat_history
 
-    def addConnection(self, chatHandler):
-        self.connections.append(chatHandler)
+    def addConnection(self, conn):
+        self.connections.append(conn)
 
     def getConnection(self):
         return self.connections
@@ -41,4 +41,5 @@ class ChatHandler:
 
     def addMessage(self, msg):
         pass
+
 

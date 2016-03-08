@@ -1,7 +1,7 @@
 __author__ = 'Anna'
 
 import socketserver
-import ClientHandler
+from ClientHandler import ClientHandler
 
 """
 Variables and functions that must be used by all the ClientHandler objects

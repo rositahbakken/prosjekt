@@ -22,10 +22,13 @@ class ClientHandler(socketserver.BaseRequestHandler):
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
+        self.chatHandler.addConnection(self.connection)
+        self.user = ''
 
         # Loop that listens for messages from the client
         while True:
             self.received_string = self.connection.recv(4096)
+            self.received_string = self.received_string.decode()
             self.checkPayload()
 
             # TODO: Add handling of received payload from client
@@ -34,14 +37,13 @@ class ClientHandler(socketserver.BaseRequestHandler):
         req = None
         cont = None
         loggedin = False
-        user = ''
 
         if type(self.received_string) != str:
             try:
                 jrec = json.loads(self.received_string)
                 req = jrec["request"].encode()
                 cont = jrec["content"].encode()
-            except ValueError:
+            except TypeError or ValueError:
                 print("Dette er ikke et JSON-objekt")
 
         else:
@@ -50,23 +52,23 @@ class ClientHandler(socketserver.BaseRequestHandler):
             cont = jrec["content"]
 
         if req == "login" and cont and not loggedin:
-            user = cont
-            if user not in self.chatHandler.getUsers():
-                self.chatHandler.addUser(user)
-                self.chatHandler.addConnection(self.chatHandler)
+            self.user = cont
+            if self.user not in self.chatHandler.getUsers():
+                self.chatHandler.addUser(self.user)
+                #self.chatHandler.addConnection(self.chatHandler)
                 tid = time.time()
                 now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-                response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Suksessfull innlogging."}
+                response = {"timestamp": now, "sender": "Server", "response": "login", "content": "Suksessfull innlogging."}
                 jsonresponse = json.dumps(response)
-                self.connection.send(json.dumps(jsonresponse))
+                self.connection.send(jsonresponse.encode())
             else:
                 tid = time.time()
                 now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-                response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Brukernavnet er opptatt, vennligst velg et annet."}
+                response = {"timestamp": now, "sender": "Server", "response": "login", "content": "Brukernavnet er opptatt, vennligst velg et annet."}
                 jsonresponse = json.dumps(response)
-                self.connection.send(json.dumps(jsonresponse))
+                self.connection.send(jsonresponse.encode())
                 for i in self.chatHandler.getHistory():
-                    self.connection.send(i)
+                    self.connection.send(i.encode())
                 print(user+" logget på!")
                 self.loggedin = True ##flytta for-løkka hit, men litt usikker. derde hadde den i eks på github
 
@@ -77,43 +79,42 @@ class ClientHandler(socketserver.BaseRequestHandler):
             user = ''
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": "Suksessfull utlogging"}
+            response = {"timestamp": now, "sender": "Server", "response": "logout", "content": "Suksessfull utlogging"}
             jsonresponse = json.dumps(response)
-            self.connection.send(json.dumps(jsonresponse))
+            self.connection.send(jsonresponse.encode())
             print(self.chatHandler.getUsers()+" logged out!")
+
         elif req == 'history':
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
             history = self.chatHandler.getHistory()
-            response = {"Timestamp": thisTime, "Sender": "Server", "Response": "Message", "Content": cont}
+            response = {"timestamp": thisTime, "sender": "Server", "response": "history", "content": cont}
             jsonresponse = json.dumps(response)
-            self.connection.send(jsonresponse)
+            self.connection.send(jsonresponse.encode())
 
         elif req == "msg" and cont:
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            ob = {"Timestamp": thisTime, "Sender": "Server", "Response": "Message", "Content": cont}
+            ob = {"timestamp": thisTime, "sender": "Server", "response": "message", "content": cont}
             jsonresponse = json.dumps(ob)
             self.chatHandler.addMessage(jsonresponse)
             thread = self.chatHandler.getConnection()
             tid = time.time()
             thisTime = datetime.datetime.fromtimestamp(tid).strftime("%H:%M:%S")
-            response = {"Timestamp": thisTime, "Sender": user, "Response": "Message", "Content": cont}
+            response = {"timestamp": thisTime, "sender": self.user, "response": "message", "content": cont}
             jsonresponse = json.dumps(response)
             for i in thread:
-                i.connection.send(jsonresponse)
-
+                i.send(jsonresponse.encode())
             self.chatHandler.addHistory(cont)
-            self.connection.send(cont)
 
 
         elif req == "names" and not cont:
             users = self.chatHandler.getUsers()
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
-            response = {"Timestamp": now, "Sender": "Server", "Response": "Login", "Content": users}
+            response = {"timestamp": now, "sender": "Server", "response": "names", "content": users}
             jsonresponse = json.dumps(response)
-            self.connection.send(jsonresponse)
+            self.connection.send(jsonresponse.encode())
 
         elif req == "help" and not cont:
             print("hjelpetext")

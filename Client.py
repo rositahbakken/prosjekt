@@ -4,6 +4,7 @@ import socket
 import json
 from MessageReceiver import MessageReceiver
 from MessageParser import MessageParser
+import time
 
 class Client:
     """
@@ -21,18 +22,17 @@ class Client:
         self.host = host
         self.server_port = server_port
         self.run()
-
+        message_receiver = MessageReceiver(self, self.connection)
+        message_receiver.start()
         while True:
             user_input = input('> ')
-            user_input = user_input.split('',1)
+            user_input = user_input.split(' ',1)
             if len(user_input) == 1:
                 payload = {'request':user_input[0], 'content':''}
             else:
                 payload = {'request':user_input[0], 'content':user_input[1]}
             payload = json.dumps(payload)
-            self.connection.send(payload)
-
-
+            self.connection.send(payload.encode())
 
         # TODO: Finish init process with necessary code
 

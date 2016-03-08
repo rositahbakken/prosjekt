@@ -9,12 +9,16 @@ class MessageParser():
             'error': self.parse_error,
             'info': self.parse_info,
             'message': self.parse_message,
-            'history': self.parse_history
+            'history': self.parse_history,
+            'login': self.parse_login,
+            'logout': self.parse_logout,
+            'names': self.parse_names
 	    # More key:values pairs are needed
         }
 
     def parse(self, payload):
-        payload = json.loads(payload) # decode the JSON object
+        decodedPayload = payload.decode()
+        payload = json.loads(decodedPayload) # decode the JSON object
         # JSON object on form: { 'timestamp': <timestampt>, 'sender': <username>, 'response': <response>, 'content': <content>, }
         if payload['response'] in self.possible_responses:
             return self.possible_responses[payload['response']](payload)
@@ -48,5 +52,22 @@ class MessageParser():
         for user in history_list:
             history_msg += user+': '+history[user]+'\n'
         return history_msg
+
+    def parse_login(self, payload):
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+content
+
+
+    def parse_logout(self, payload):
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+content
+
+
+    def parse_names(self, payload):
+        timestamp = payload['timestamp']
+        content = payload['content']
+        return timestamp+'  '+content
 
     # Include more methods for handling the different responses...
