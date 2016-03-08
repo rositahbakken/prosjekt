@@ -83,9 +83,9 @@ class ClientHandler(socketserver.BaseRequestHandler):
 
         elif req == "logout" and self.loggedin and not cont:
             self.chatHandler.removeUser(self.user)
-            #self.chatHandler.removeConnection(self.chatHandler)
+            self.chatHandler.removeConnection(self.connection)
             self.loggedin = False
-            #user = ''
+
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
             response = {"timestamp": now, "sender": "Server", "response": "logout", "content": "Suksessfull utlogging"}
