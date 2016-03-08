@@ -22,7 +22,6 @@ class ClientHandler(socketserver.BaseRequestHandler):
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
-        self.chatHandler.addConnection(self.connection)
         self.user = ''
         self.loggedin = False
 
@@ -55,7 +54,7 @@ class ClientHandler(socketserver.BaseRequestHandler):
         if req == "login" and cont and not self.loggedin:
             self.user = cont
             if self.user not in self.chatHandler.getUsers():
-                #self.chatHandler.addConnection(self.chatHandler)
+                self.chatHandler.addConnection(self.connection)
                 for i in self.chatHandler.getHistory():
                     self.connection.send(i.encode())
                     time.sleep(0.01)
@@ -83,9 +82,9 @@ class ClientHandler(socketserver.BaseRequestHandler):
 
         elif req == "logout" and self.loggedin and not cont:
             self.chatHandler.removeUser(self.user)
-            #self.chatHandler.removeConnection(self.chatHandler)
+            self.chatHandler.removeConnection(self.connection)
             self.loggedin = False
-            #user = ''
+
             tid = time.time()
             now = datetime.datetime.fromtimestamp(tid).strftime('%H:%M:%S')
             response = {"timestamp": now, "sender": "Server", "response": "logout", "content": "Suksessfull utlogging"}
