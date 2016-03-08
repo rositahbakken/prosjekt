@@ -100,7 +100,6 @@ class ClientHandler(socketserver.BaseRequestHandler):
 
         elif req == 'history':
             for i in self.chatHandler.getHistory():
-                    print(i)
                     self.connection.send(i.encode())
                     time.sleep(0.01)
 
