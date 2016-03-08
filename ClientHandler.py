@@ -57,7 +57,6 @@ class ClientHandler(socketserver.BaseRequestHandler):
             if self.user not in self.chatHandler.getUsers():
                 #self.chatHandler.addConnection(self.chatHandler)
                 for i in self.chatHandler.getHistory():
-                    print(i)
                     self.connection.send(i.encode())
                     time.sleep(0.01)
                 self.loggedin = True
